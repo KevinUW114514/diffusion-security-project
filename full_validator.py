@@ -32,9 +32,13 @@ class ClipWrapper(torch.nn.Module):
         return self.clip_model.encode_text(tokens)
 
 def main():
-    path = "clip_text_normalized_embeddings_checkpoint.pt"
-    prompt_name = "prompts"
-    embeddings_name = "normalized_embeddings"
+    # path = "clip_text_normalized_embeddings_checkpoint.pt"
+    # prompt_name = "prompts"
+    # embeddings_name = "normalized_embeddings"
+    
+    path = "filtered_clip_text_normalized_embeddings_checkpoint.pt"
+    prompt_name = "filtered_prompts"
+    embeddings_name = "filtered_embeddings"
     
     checkpoint_data = torch.load(path)
     pending_prompts = checkpoint_data[prompt_name]

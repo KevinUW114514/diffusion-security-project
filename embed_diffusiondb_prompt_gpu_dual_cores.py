@@ -19,8 +19,9 @@ class TextDataset(Dataset):
             raise ValueError("Dataset must contain a 'prompt' column.")
         
         self.data = np.array([str(x) for x in self.data['prompt']])
-        num_elements = len(self.data)  # Assuming embeddings is a 2D tensor (num_prompts, embedding_dim)
+        num_elements = len(self.data) 
         num_to_select = num_elements // 4
+        # Sample 1/4 of the data
         indices = np.random.choice(num_elements, size=num_to_select, replace=False)
         self.data = self.data[indices]
         self.indices = indices
@@ -34,14 +35,14 @@ class TextDataset(Dataset):
 class ClipWrapper(torch.nn.Module):
     def __init__(self, clip_model):
         super().__init__()
-        self.clip_model = clip_model  # the original CLIP model
+        self.clip_model = clip_model 
 
     def forward(self, tokens):
         # Internally call CLIP’s encode_text
         return self.clip_model.encode_text(tokens)
 
 def main():
-    dataset_path = "diffusiondb.csv"  # Path to your large dataset
+    dataset_path = "diffusiondb.csv"
     batch_size = 10000
 
     # Load CLIP on the main device (cuda:0)
@@ -68,8 +69,6 @@ def main():
             tokens = clip.tokenize(texts, truncate=True).to(device)
 
             # Forward pass through the model
-            #    With DataParallel, you can call encode_text directly
-            #    and it will be automatically parallelized.
             text_features = model(tokens)
 
             # Normalize embeddings

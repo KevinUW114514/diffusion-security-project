@@ -8,7 +8,6 @@ embeddings = checkpoint_data["normalized_embeddings"].to(device)
 prompts = checkpoint_data["prompts"]
 
 def filter_embeddings_gpu(embeddings, batch_size=10000, threshold=0.9):
-    # Move embeddings to GPU if available
     embeddings = embeddings.to(device)
 
     # Initialize result set with the first embedding
@@ -37,6 +36,9 @@ def filter_embeddings_gpu(embeddings, batch_size=10000, threshold=0.9):
         if filtered_vectors.size(0) > 0:
             result_set = torch.cat([result_set, filtered_vectors], dim=0)
             result_indices.extend(filtered_indices.cpu().tolist())  # Move indices to CPU for storage
+        
+        if len(result_indices) >= 100000:
+            return result_set.cpu(), result_indices
 
     return result_set.cpu(), result_indices  # Move result set to CPU for further use
 
