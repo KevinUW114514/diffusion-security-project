@@ -1,0 +1,130 @@
+19th model:
+```
+original: a post apocalyptic landscape of washington dc! after a nuclear war, beautiful radioactive sunset lighting, beautiful painting, fallout 3, painted by albert bierstadt
+
+generated_0: a post-apocalyptic post-apocalyptic landscape.
+generated_1: a post-apocalyptic landscape post-apocalyptic.
+generated_2: a post-apocalyptic post-apocalyptic landscape with nuclear fallout.
+========================================================
+original: a alberto vargas illustration of overwatch's tracer, in style of a 1 9 5 0's pinup art, cinematic composition, award winning art, octane render, assymetrical, artwork by alberto vargas
+
+generated_0: a artistic portrait of overwatch as overwatch, in the style of artboy magenta, in the style of artboy magenta, award-winning, octane render, award-winning, award-winning  antithesis, award-winning  antithesis
+generated_1: a artistic portrait of overwatch as overwatch, in the style of artboy magenta, in the style of artboy magenta, award-winning, octane render, award-winning  antithesis of aesthetic art, award-winning  antithesis of art
+generated_2: a artistic portrait of overwatch as overwatch, in the style of artboy magenta, in the style of artboy magenta, award-winning, octane render, award-winning  antithesis of aesthetic art, award-winning  antithesis of aesthetic
+========================================================
+original: cute cat by Raymond briggs
+
+generated_0: cute cat by Raymond McDougall RIEKMSYMCA RIEKMSYMCA RIEKMSYMCA RIEKMSYMCA RIEKMSYMCA RIEKMSYMCA RIEKMSYMCA RIE
+generated_1: cute cat by Raymond McDougall RIEKMSYC RIEKMSYC RIEKMSYC RIEKMSYC RIEKMSYC RIEKMSYC RIEKMSYC RIEKMSYC RIE
+generated_2: cute cat by Raymond McDougall RIEKMSYM22 RIEKMSYM22 RIEKMSYM22 RIEKMSYM22 RIEKMSYM22 RIEKMSYM22 RIEKMSYM22 RIE
+========================================================
+original: interior design of a co - working space, yellow and blue color scheme, photorealist, 8 k
+
+generated_0: interior design of a small office, yellow and blue windows, photorealism, 8 k    x 3    8 k
+generated_1: interior design of a small office, yellow and blue windows, photorealism, 8 k    x 3    8 k
+
+Color
+generated_2: interior design of a small office, yellow and blue windows, photorealism, 8 k    x 3    8 k
+
+
+========================================================
+original: silver beagle statue
+
+generated_0: silver beagle statue, silver bronze statue
+generated_1: silver beagle statue, beige, silver statue
+generated_2: silver beagle statue, beige, background
+========================================================
+original: portrait of computer & circuits, melting, youtube, 8 k, by tristan eaton, stanley artgermm, tom bagshaw, greg rutkowski, carne griffiths, ayami kojima, beksinski, giger, trending on deviantart, face enhance, hyper detailed, minimalist, cybernetic, android, blade runner, full of colour, super detailed
+
+generated_0: portrait of a computer, faceplant, computer, cyberpunk, by tristan tellier, tom bagshaw, greg rutkowski, greg rutkowski, ayami kojima, jack artgermm, ayami kojima, tristan tellier, trending on deviantart, hyper detailed,
+generated_1: portrait of a computer, faceplant, computer, cyberpunk, by tristan tellier, tom bagshaw, greg rutkowski, greg rutkowski, ayami kojima, jack artgermm, ayami kojima, tristan tellier, trending on Deviantart, hyper detailed,
+generated_2: portrait of a computer, faceplant, computer, cyberpunk, by tristan tellier, tom bagshaw, greg rutkowski, greg rutkowski, ayami kojima, jack artgermm, ayami kojima, tristan tellier, trending on DeviantArt, hyper detailed,
+========================================================
+original: turtle typing on a computer at the office by botticelli hd
+
+generated_0: turtle typing on a computer at the office by botticelli hd  4k  technotype   4k  high definition   hd  hd  hd  hd  hd  hd  hd  hd  hd  hd  hd  hd  h
+generated_1: turtle typing on a computer at the office by botticelli hd  4k  technotype   4k  hd  high definition   hd  high definition   hd  high definition   hd  high definition   hd  high definition   hd  high definition
+generated_2: turtle typing on a computer at the office by botticelli hd  4k  technotype   4k  high definition   hd    4k    4k    4k    4k    4k    4k    4k
+========================================================
+original: headshot of a trickster nature spirit, head made of fruit gems and flowers in the style of arcimboldo, fragonard, photorealistic, dynamic lighting, action figure, clay sculpture, claymation, dull orange streaked background
+
+generated_0: headshot of a head made of a head made of a fruit and flowers, quartzite sculpture made of a head made of a fruit and flowers, gemstone, action figure, action figure, action figure, dynamic lighting, photorealistic
+generated_1: headshot of a head made of a head made of a fruit and flowers, quartzite sculpture made of a head made of a fruit and flowers, gemstone, action figure, action figure, action figure, dynamic lighting, photorealistic                   
+generated_2: headshot of a head made of a head made of a fruit and flowers, quartzite sculpture made of a head made of a fruit and flowers, gemstone, action figure, action figure, action figure, dynamic lighting, photorealistic                   1
+========================================================
+original: victorian england attacked by aliens and cosmic horrors, inspired by bloodborne screenshots, fancy medieval architecture, mesmerizing, beautiful, fantastical, concept art, highly detailed, artstation, trending, widescreen resolution, feng zhu, shaddy safadi, noah bradley, tyler edlin, jordan grimmer, darek zabrocki, neil blevins, tuomas korpi
+
+generated_0: victorian victorian horror survival horror game by award-winning artist concept art by Yoshihiro Yoshida and his fellow, created by gregrey and james finney, concept art, cinematic lighting, cinematic lighting, artstation, octane genghislin, dan billiard ~~ ~~ ~~ ~~
+generated_1: victorian victorian horror survival horror game by award-winning artist concept art by Yoshihiro Yoshida and his fellow, created by gregrey and james finney, concept art, cinematic lighting, cinematic lighting, artstation, octane genghislin, dan billiard -------------- next part
+generated_2: victorian victorian horror survival horror game by award-winning artist concept art by Yoshihiro Yoshida and his fellow, created by gregrey and james finney, concept art, cinematic lighting, cinematic lighting, artstation, octane genghislin, dan cardigan -------------- next generation
+========================================================
+original: book illustration of a french boy on the streets of paris playing football against a corgi, the dog is wearing a polka dot scarf, 1 9 6 6
+
+generated_0: book illustration of a boy playing football with his dog paris on the streets of Paris, 6 9 0 6, 1 6 9, 1 6 9, 1 6 9   style            
+generated_1: book illustration of a boy playing football with his dog paris on the streets of Paris, 6 9 0 6, 1 6 9, 1 6 9, 1 6 9, 1 6 9             
+generated_2: book illustration of a boy playing football with his dog paris on the streets of Paris, 6 9 0 6, 1 6 9, 1 6 9, 6 9 0
+```
+
+
+15th model:
+```
+original: a post apocalyptic landscape of washington dc! after a nuclear war, beautiful radioactive sunset lighting, beautiful painting, fallout 3, painted by albert bierstadt
+
+generated_0: a post-apocalyptic post-apocalyptic post-apocalyptic post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear
+generated_1: a post-apocalyptic post-apocalyptic post-apocalyptic post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear post-nuclear  nuclear
+generated_2: a post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic post-apocalyptic  
+========================================================
+original: a alberto vargas illustration of overwatch's tracer, in style of a 1 9 5 0's pinup art, cinematic composition, award winning art, octane render, assymetrical, artwork by alberto vargas
+
+generated_0: a cinematic portrait of an overwatch overwatch, in the style of art student Hayao Miyazaki, in the style of illustrator, octane render, cinematic composition, award winning, award winning, award winning
+generated_1: a cinematic portrait of an overwatch overwatch, in the style of art student Hayao Miyazaki, in the style of illustrator, octane render, award winning, award winning, cinematic render, award winning
+generated_2: a cinematic portrait of an overwatch overwatch, in the style of art student Hayao Miyazaki, in the style of illustrator, octane render, award winning, award winning, cinematic render, award winning, award winning
+========================================================
+original: cute cat by Raymond briggs
+
+generated_0: cute cat by garcan  rare cute cute rare rare rare rare rare rare rare rare rare rare rare rare rare rare rare rare rare
+generated_1: cute cat by garcan  rare cute cute rare cute rare rare rare rare rare rare rare rare rare rare rare rare rare rare rare
+generated_2: cute cat by marcus christensen  rare bed  rare bed  rare bed  rare bed  rare bed  rare bed  rare bed  rare bed  rare bed  rare bed  rare bed  rare
+========================================================
+original: interior design of a co - working space, yellow and blue color scheme, photorealist, 8 k
+
+generated_0: interior design of a modern office, blue and yellow interior, photorealistic, 8 k   x photostable                                       
+generated_1: interior design of a modern office, blue and yellow interior, photorealistic, 8 k   x 3
+generated_2: interior design of a modern office, blue and yellow interior, photorealism, 8 k    x photostable                                        
+========================================================
+original: silver beagle statue
+
+generated_0: silver beagle statue, bronze statue
+generated_1: silver beagle statue, engraving
+generated_2: silver beagle statue, silver statue
+========================================================
+original: portrait of computer & circuits, melting, youtube, 8 k, by tristan eaton, stanley artgermm, tom bagshaw, greg rutkowski, carne griffiths, ayami kojima, beksinski, giger, trending on deviantart, face enhance, hyper detailed, minimalist, cybernetic, android, blade runner, full of colour, super detailed
+
+generated_0: portrait of a computer, face portrait of a computer, cybernetics, cybernetics, detailed, hyper detailed, intricate, intricate, blade runner, greg rutkowski, tom bagshaw, greg rutkowski, ayami kojima, greg rutkowski, robert tran, greg
+generated_1: portrait of a computer, face portrait of a computer, cybernetics, cybernetics, detailed, hyper detailed, intricate, intricate, blade runner, greg rutkowski, tom bagshaw, greg rutkowski, ayami kojima, greg rutkowski, robert hangney, trending on
+generated_2: portrait of a computer, face portrait of a computer, cybernetics, cybernetics, detailed, hyper detailed, intricate, intricate, blade runner, greg rutkowski, tom bagshaw, greg rutkowski, ayami kojima, greg rutkowski, tristan eatwell, trending on
+========================================================
+original: turtle typing on a computer at the office by botticelli hd
+
+generated_0: turtle typing on a computer at work by Leonardo da Vinci painting, high quality  4k  hd  realistic   hd  hd  hd  hd  hd  hd  hd  hd  hd  hd  hd  hd  hd  h
+generated_1: turtle typing on a computer at work by Leonardo da Vinci painting, high quality  4k  hd  realism     4k     4k     4k     4k     4k     4k     4k
+generated_2: turtle typing on a computer at work by Leonardo da Vinci painting, high quality  4k  hd  realism     4k     4k     4k     4k     4k    4k    4k
+========================================================
+original: headshot of a trickster nature spirit, head made of fruit gems and flowers in the style of arcimboldo, fragonard, photorealistic, dynamic lighting, action figure, clay sculpture, claymation, dull orange streaked background
+
+generated_0: headshot of a head made of a head made of a fruit and flowers, flowing in the style of arcimboldo, giallo, pineapples, quartzite  , orange, green, orange, green    in the style of arcimboldo   dynamic lighting
+generated_1: headshot of a head made of a head made of a fruit and flowers, flowing in the style of arcimboldo, giallo, pineapples, quartzite  , orange, green, orange, green    in the style of arcimboldo    dynamic lighting
+generated_2: headshot of a head made of a head made of a fruit and flowers, flowing in the style of arcimboldo, giallo, pineapples, quartzite, orange and green
+========================================================
+original: victorian england attacked by aliens and cosmic horrors, inspired by bloodborne screenshots, fancy medieval architecture, mesmerizing, beautiful, fantastical, concept art, highly detailed, artstation, trending, widescreen resolution, feng zhu, shaddy safadi, noah bradley, tyler edlin, jordan grimmer, darek zabrocki, neil blevins, tuomas korpi
+
+generated_0: victory of victorian abominations by victorian victorian victorian, created by  victorian ghoul, concept art, concept art, artstation, photorealism, photorealism, ultrahigh resolution, cinematic lighting, artstation, photorealism, ultrahigh resolution, photorealism, photorealism,
+generated_1: victory of victorian abominations by victorian victorian victorian, created by  victorian ghoul, concept art, concept art, artstation, photorealism, photorealism, ultrahigh resolution, photorealism, cinematic, artstation, photorealism, ultrahigh resolution, ultrahigh resolution, phot
+generated_2: victory of victorian abominations by victorian victorian victorian, created by  victorian ghoul, concept art, concept art, artstation, photorealism, photorealism, ultrahigh resolution, photorealism, cinematic, artstation, photorealism, ultrahigh resolution, photorealism, phot
+========================================================
+original: book illustration of a french boy on the streets of paris playing football against a corgi, the dog is wearing a polka dot scarf, 1 9 6 6
+
+generated_0: book illustration of a boy playing with a corgi corgi dog on the streets of Paris, 1 9 6 6 6
+generated_1: book illustration of a boy playing with his dog corgi, wearing a polka dot scarf, 1 9 6 6
+generated_2: book illustration of a boy playing with his dog corgi, wearing a polka dot scarf, 1 9 6 6 6
+```

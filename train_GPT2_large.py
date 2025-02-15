@@ -59,21 +59,19 @@ class ClipCocoDataset(Dataset):
         captions_raw = all_data["captions"]
         # self.image_ids = [caption["image_id"] for caption in captions_raw] #
         self.captions = [caption['caption'] for caption in captions_raw]
-        if os.path.isfile(f"{data_path[:-4]}_tokens.pkl"):
-            print("=" * 80)
-            print(f"Loading from existing tokens file!!\n")
-            with open(f"{data_path[:-4]}_tokens.pkl", 'rb') as f:
+        if os.path.isfile(f"{data_path[:-4]}_larger_tokens.pkl"):
+            with open(f"{data_path[:-4]}_larger_tokens.pkl", 'rb') as f:
                 self.captions_tokens, self.caption2embedding, self.max_seq_len = pickle.load(f)
         else:
             self.captions_tokens = []
             self.caption2embedding = []
             max_seq_len = 0
             for caption in captions_raw:
-                self.captions_tokens.append(torch.tensor(self.tokenizer.encode(caption['caption'], max_length=1024, truncation=True), dtype=torch.int64))
+                self.captions_tokens.append(torch.tensor(self.tokenizer.encode(caption['caption']), dtype=torch.int64))
                 self.caption2embedding.append(caption["clip_embedding"])
                 max_seq_len = max(max_seq_len, self.captions_tokens[-1].shape[0])
             # self.max_seq_len = max_seq_len
-            with open(f"{data_path[:-4]}_tokens.pkl", 'wb') as f:
+            with open(f"{data_path[:-4]}_larger_tokens.pkl", 'wb') as f:
                 pickle.dump([self.captions_tokens, self.caption2embedding, max_seq_len], f)
         all_len = torch.tensor([len(self.captions_tokens[i]) for i in range(len(self))]).float()
         self.max_seq_len = min(int(all_len.mean() + all_len.std() * 10), int(all_len.max()))
@@ -243,14 +241,15 @@ class ClipCaptionModel(nn.Module):
                  num_layers: int = 8, mapping_type: MappingType = MappingType.MLP):
         super(ClipCaptionModel, self).__init__()
         self.prefix_length = prefix_length
-        self.gpt = GPT2LMHeadModel.from_pretrained('gpt2')
+        self.gpt = GPT2LMHeadModel.from_pretrained('gpt2-medium')
         self.gpt_embedding_size = self.gpt.transformer.wte.weight.shape[1]
         if mapping_type == MappingType.MLP:
             self.clip_project = MLP(
                 (prefix_size, (self.gpt_embedding_size * prefix_length) // 2, self.gpt_embedding_size * prefix_length)
             )
         else:
-            self.clip_project = TransformerMapper(prefix_size, self.gpt_embedding_size, prefix_length, clip_length, num_layers)
+            self.clip_project = TransformerMapper(prefix_size, self.gpt_embedding_size, prefix_length,
+                                                                     clip_length, num_layers)
 
 
 class ClipCaptionPrefix(ClipCaptionModel):
@@ -297,7 +296,7 @@ def load_model(config_path: str, epoch_or_latest: Union[str, int] = '_latest'):
 def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
           lr: float = 2e-5, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
 
-    device = torch.device('cuda:0')
+    device = torch.device('cuda:1')
     batch_size = args.bs
     epochs = args.epochs
     if not os.path.exists(output_dir):
@@ -335,7 +334,7 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
         if epoch % args.save_every == 0 or epoch == epochs - 1:
             torch.save(
                 model.state_dict(),
-                os.path.join(output_dir, f"{output_prefix}-{epoch + 00:03d}.pt"),
+                os.path.join(output_dir, f"{output_prefix}-{epoch:03d}.pt"),
             )
     return model
 
@@ -343,13 +342,13 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', default='./training_data.pkl')
-    parser.add_argument('--out_dir', default='./data/checkpoints')
+    parser.add_argument('--out_dir', default='./checkpoints-xl')
     parser.add_argument('--prefix', default='coco_prefix', help='prefix for saved filenames')
-    parser.add_argument('--epochs', type=int, default=25)
+    parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--save_every', type=int, default=1)
-    parser.add_argument('--prefix_length', type=int, default=40)
-    parser.add_argument('--prefix_length_clip', type=int, default=40)
-    parser.add_argument('--bs', type=int, default=16)
+    parser.add_argument('--prefix_length', type=int, default=10)
+    parser.add_argument('--prefix_length_clip', type=int, default=10)
+    parser.add_argument('--bs', type=int, default=2)
     parser.add_argument('--only_prefix', dest='only_prefix', action='store_true')
     parser.add_argument('--mapping_type', type=str, default='mlp', help='mlp/transformer')
     parser.add_argument('--num_layers', type=int, default=8)
@@ -357,7 +356,7 @@ def main():
     parser.add_argument('--normalize_prefix', dest='normalize_prefix', action='store_true')
     args = parser.parse_args()
     prefix_length = args.prefix_length
-    dataset = ClipCocoDataset(args.data, prefix_length, normalize_prefix=args.normalize_prefix)
+    dataset = ClipCocoDataset(args.data, prefix_length, gpt2_type="gpt2-medium")
     # prefix_dim = 640 if args.is_rn else 512
     prefix_dim = 768
     args.mapping_type = {'mlp': MappingType.MLP, 'transformer': MappingType.Transformer}[args.mapping_type]
@@ -370,9 +369,6 @@ def main():
                                   num_layers=args.num_layers, mapping_type=args.mapping_type)
         print("Train both prefix and GPT")
         sys.stdout.flush()
-    
-    # checkpoint = torch.load("./data/checkpoints/coco_prefix-009.pt", map_location=torch.device('cpu'))
-    # model.load_state_dict(checkpoint)
     train(dataset, model, args, output_dir=args.out_dir, output_prefix=args.prefix)
 
 

@@ -1,16 +1,13 @@
 import torch
 from tqdm import tqdm
-import pickle
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-with open("./data/clip_text_normalized_embeddings_checkpoint.pkl", "rb") as f:
-    checkpoint_data = pickle.load(f)
-    
-embeddings = checkpoint_data["embeddings"]
+checkpoint_data = torch.load("clip_text_normalized_embeddings_checkpoint.pt")
+embeddings = checkpoint_data["normalized_embeddings"].to(device)
 prompts = checkpoint_data["prompts"]
 
-def filter_embeddings_gpu(embeddings, batch_size=1000, threshold=0.9):
+def filter_embeddings_gpu(embeddings, batch_size=10000, threshold=0.9):
     embeddings = embeddings.to(device)
 
     # Initialize result set with the first embedding
@@ -40,20 +37,19 @@ def filter_embeddings_gpu(embeddings, batch_size=1000, threshold=0.9):
             result_set = torch.cat([result_set, filtered_vectors], dim=0)
             result_indices.extend(filtered_indices.cpu().tolist())  # Move indices to CPU for storage
         
-        # if len(result_indices) >= 10:
-        #     return result_set.cpu(), result_indices
+        if len(result_indices) >= 100000:
+            return result_set.cpu(), result_indices
 
     return result_set.cpu(), result_indices  # Move result set to CPU for further use
 
 result_set, result_indices = filter_embeddings_gpu(embeddings)
 prompts = prompts[result_indices]  # Filter prompts based on selected indices
 
-with open("./data/filtered_clip_text_normalized_embeddings_checkpoint.pkl", "wb") as f:
-    pickle.dump({
-        "filtered_embeddings": result_set,
-        "filtered_prompts": prompts,
-        "filtered_indices": result_indices
-    }, f)
+torch.save({
+    "filtered_embeddings": result_set,
+    "filtered_prompts": prompts,
+    "filtered_indices": result_indices
+}, "filtered_clip_text_normalized_embeddings_checkpoint.pt")
 
 print(f"Number of filtered embeddings: {result_set.shape[0]}")
 print(f"Selected indices: {result_indices[:10]}")  # Show the first 10 indices

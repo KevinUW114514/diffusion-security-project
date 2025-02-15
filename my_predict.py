@@ -1,22 +1,16 @@
 # Prediction interface for Cog ⚙️
 # Reference: https://github.com/replicate/cog/blob/main/docs/python.md
 
-import clip
-import os
 from torch import nn
 import numpy as np
 import torch
 import torch.nn.functional as nnf
-import sys
+import pickle
 from typing import Tuple, List, Union, Optional
 from transformers import (
     GPT2Tokenizer,
     GPT2LMHeadModel,
-    AdamW,
-    get_linear_schedule_with_warmup,
 )
-import skimage.io as io
-import PIL.Image
 
 import cog
 
@@ -37,82 +31,48 @@ TSN = Optional[TS]
 TA = Union[T, ARRAY]
 
 WEIGHTS_PATHS = {
-    "coco": "./checkpoints/coco_prefix-009.pt",
+    # "coco": "./checkpoints/coco_prefix-015.pt",
+    # "coco": "./data/checkpoints-p40-only_prefix/coco_prefix-006.pt",
+    "coco": "./data/checkpoints/coco_prefix-008.pt",
     # "conceptual-captions": "conceptual_weights.pt",
 }
 
 D = torch.device
 CPU = torch.device("cpu")
+DEVICE = "cuda:1"
 
-
-# class Predictor(cog.Predictor):
-#     def setup(self):
-#         """Load the model into memory to make running multiple predictions efficient"""
-#         self.device = torch.device("cuda")
-#         self.clip_model, self.preprocess = clip.load(
-#             "ViT-B/32", device=self.device, jit=False
-#         )
-#         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-
-#         self.models = {}
-#         self.prefix_length = 40
-#         for key, weights_path in WEIGHTS_PATHS.items():
-#             model = ClipCaptionModel(self.prefix_length)
-#             model.load_state_dict(torch.load(weights_path, map_location=CPU))
-#             model = model.eval()
-#             model = model.to(self.device)
-#             self.models[key] = model
-
-#     @cog.input("prompt_emb_path", type=str, help="Input prompt embedding")
-#     @cog.input(
-#         "model",
-#         type=str,
-#         options=WEIGHTS_PATHS.keys(),
-#         default="coco",
-#         help="Model to use",
-#     )
-#     @cog.input(
-#         "use_beam_search",
-#         type=bool,
-#         default=False,
-#         help="Whether to apply beam search to generate the output text",
-#     )
-#     def predict(self, prompt_emb_path, model, use_beam_search):
-#         """Run a single prediction on the model"""
-#         model = self.models[model]
-#         with torch.no_grad():
-#             prompt_emb = torch.load(prompt_emb_path).to(self.device, dtype=torch.float32)
-#             prefix_embed = model.clip_project(prompt_emb).reshape(1, self.prefix_length, -1)
-#         if use_beam_search:
-#             return generate_beam(model, self.tokenizer, embed=prefix_embed)[0]
-#         else:
-#             return generate2(model, self.tokenizer, embed=prefix_embed)
+gpt2_model = "gpt2"
         
-        
-def main(prompt_emb_path, model_name="coco", use_beam_search=False):
+def main(data, model_name="coco", use_beam_search=False, is_only_prefix=False):
     # Device setup
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device = DEVICE
     
     # Load CLIP model and tokenizer
     # clip_model, preprocess = clip.load("ViT-B/32", device=device, jit=False)
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2-large")
+    tokenizer = GPT2Tokenizer.from_pretrained(gpt2_model)
     
     # Model loading
     models = {}
     prefix_length = 40
     for key, weights_path in WEIGHTS_PATHS.items():
         # model = ClipCaptionModel(prefix_length, 768)
-        model = ClipCaptionPrefix(prefix_length, 768)
-        checkpoint = torch.load(weights_path, map_location=torch.device('cpu'))
+        if is_only_prefix:
+            model = ClipCaptionPrefix(prefix_length, 768)
+        else:
+            model = ClipCaptionModel(prefix_length, 768)
+        checkpoint = torch.load(weights_path, map_location=torch.device(device))
     
         # Filter out only the keys for the MLP (clip_project)
-        mlp_state_dict = {
-            k: v for k, v in checkpoint.items() if k.startswith('clip_project')
-        }
-        mlp_state_dict = {k.replace("clip_project.", ""): v for k, v in mlp_state_dict.items()}
+        # mlp_state_dict = {
+        #     k: v for k, v in checkpoint.items() if k.startswith('clip_project')
+        # }
+        # mlp_state_dict = {k.replace("clip_project.", ""): v for k, v in mlp_state_dict.items()}
+
+        model.load_state_dict(checkpoint)
         
         # Load the filtered state dict into the clip_project (MLP) module
-        model.clip_project.load_state_dict(mlp_state_dict)
+        # model.clip_project.load_state_dict(mlp_state_dict)
         # model.load_state_dict(torch.load(weights_path, map_location=torch.device('cpu')))
         model = model.eval()
         model = model.to(device)
@@ -123,20 +83,24 @@ def main(prompt_emb_path, model_name="coco", use_beam_search=False):
         raise ValueError(f"Model {model_name} not found. Available models: {list(models.keys())}")
     model = models[model_name]
 
+    for i in range(len(data["captions"])):
     # Load the prompt embedding
-    with torch.no_grad():
-        prompt_emb = torch.load(prompt_emb_path).to(device, dtype=torch.float32)
-        prefix_embed = model.clip_project(prompt_emb).reshape(1, prefix_length, -1)
-    
-    # Generate text using beam search or simple generation
-    if use_beam_search:
-        result = generate_beam(model, tokenizer, embed=prefix_embed)[0]
-    else:
-        result = generate2(model, tokenizer, embed=prefix_embed)
-    
-    # Return or print the result
-    print(result)
-    return result
+        with torch.no_grad():
+            prompt_emb = data['clip_embedding'][i].to(device, dtype=torch.float32)
+            prefix_embed = model.clip_project(prompt_emb).reshape(1, prefix_length, -1)
+        
+        # Generate text using beam search or simple generation
+        if use_beam_search:
+            result = generate_beam(model, tokenizer, embed=prefix_embed)[:3]
+        else:
+            result = generate2(model, tokenizer, embed=prefix_embed)
+        
+        # Return or print the result
+        print("========================================================")
+        print(f"original: {data['captions'][i]['caption']}\n")
+        for j, res in enumerate(result):
+            print(f"generated_{j}: {res}")
+    # return result
 
 
 class MLP(nn.Module):
@@ -180,7 +144,7 @@ class ClipCaptionModel(nn.Module):
     def __init__(self, prefix_length: int, prefix_size: int = 512):
         super(ClipCaptionModel, self).__init__()
         self.prefix_length = prefix_length
-        self.gpt = GPT2LMHeadModel.from_pretrained("gpt2-large")
+        self.gpt = GPT2LMHeadModel.from_pretrained(gpt2_model)
         self.gpt_embedding_size = self.gpt.transformer.wte.weight.shape[1]
         # if prefix_length > 10:  # not enough memory
         #     self.clip_project = nn.Linear(
@@ -232,6 +196,7 @@ def generate_beam(
     device = next(model.parameters()).device
     seq_lengths = torch.ones(beam_size, device=device)
     is_stopped = torch.zeros(beam_size, device=device, dtype=torch.bool)
+    generated = None
     with torch.no_grad():
         if embed is not None:
             generated = embed
@@ -279,8 +244,11 @@ def generate_beam(
             is_stopped = is_stopped + next_tokens.eq(stop_token_index).squeeze()
             if is_stopped.all():
                 break
+    # print(generated.shape)
+    # print(embed.shape)
     scores = scores / seq_lengths
     output_list = tokens.cpu().numpy()
+    # print(tokens.shape)
     output_texts = [
         tokenizer.decode(output[: int(length)])
         for output, length in zip(output_list, seq_lengths)
@@ -356,8 +324,27 @@ def generate2(
 
 if __name__ == "__main__":
     # Example usage: adjust the inputs as needed
-    prompt_emb_path = "../diffusion/result.pt"
+    
     model_name = "coco"
     use_beam_search = True
     
-    main(prompt_emb_path, model_name, use_beam_search)
+    training_dataset = 1
+    is_only_prefix = False
+    
+    if training_dataset == 1:
+        data_path = "./80_100_data.pkl"
+        data_path = "./80_100_data.pkl"
+        with open(data_path, 'rb') as f:
+            all_data = pickle.load(f)
+        
+        all_data["captions"] = all_data["captions"][:10]
+        all_data["clip_embedding"] = all_data["clip_embedding"][:10]
+    else:
+        data_path = "../diffusion/result.pt"
+        all_data = dict()
+        all_data["clip_embedding"] = []
+        all_data["clip_embedding"].append(torch.load(data_path, map_location='cpu'))
+        all_data["captions"] = []
+        all_data["captions"].append({"caption": "anime girl walking in the woods"})
+
+    main(all_data, model_name, use_beam_search, False)

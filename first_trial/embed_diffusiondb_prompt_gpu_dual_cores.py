@@ -4,7 +4,6 @@ import pandas as pd
 import clip
 from tqdm import tqdm
 import numpy as np
-import pickle
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -14,8 +13,18 @@ if device.type == 'cuda':
     torch.cuda.manual_seed_all(random_seed)
  
 class TextDataset(Dataset):
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, file_path):
+        self.data = pd.read_csv(file_path)
+        if 'prompt' not in self.data.columns:
+            raise ValueError("Dataset must contain a 'prompt' column.")
+        
+        self.data = np.array([str(x) for x in self.data['prompt']])
+        num_elements = len(self.data) 
+        num_to_select = num_elements // 4
+        # Sample 1/4 of the data
+        indices = np.random.choice(num_elements, size=num_to_select, replace=False)
+        self.data = self.data[indices]
+        self.indices = indices
 
     def __len__(self):
         return len(self.data)
@@ -26,27 +35,14 @@ class TextDataset(Dataset):
 class ClipWrapper(torch.nn.Module):
     def __init__(self, clip_model):
         super().__init__()
-        self.clip_model = clip_model  # the original CLIP model
+        self.clip_model = clip_model 
 
     def forward(self, tokens):
         # Internally call CLIP’s encode_text
         return self.clip_model.encode_text(tokens)
 
 def main():
-    # path = "clip_text_normalized_embeddings_checkpoint.pt"
-    # prompt_name = "prompts"
-    # embeddings_name = "normalized_embeddings"
-    
-    path = "./data/filtered_clip_text_normalized_embeddings_checkpoint.pkl"
-    prompt_name = "filtered_prompts"
-    embeddings_name = "filtered_embeddings"
-    
-    # checkpoint_data = torch.load(path)
-    with open(path, "rb") as f:
-        checkpoint_data = pickle.load(f)
-    pending_prompts = checkpoint_data[prompt_name].tolist()
-    pending_embeddings = checkpoint_data[embeddings_name]
-    
+    dataset_path = "diffusiondb.csv"
     batch_size = 10000
 
     # Load CLIP on the main device (cuda:0)
@@ -60,7 +56,7 @@ def main():
         model = torch.nn.DataParallel(model, device_ids=[0, 1])
 
     # Prepare DataLoader
-    dataset = TextDataset(pending_prompts)
+    dataset = TextDataset(dataset_path)
     dataloader = DataLoader(dataset, batch_size=batch_size,
                             shuffle=False, num_workers=8, pin_memory=True)
 
@@ -73,8 +69,6 @@ def main():
             tokens = clip.tokenize(texts, truncate=True).to(device)
 
             # Forward pass through the model
-            #    With DataParallel, you can call encode_text directly
-            #    and it will be automatically parallelized.
             text_features = model(tokens)
 
             # Normalize embeddings
@@ -85,7 +79,13 @@ def main():
 
     # Concatenate all embeddings and save
     normalized_embeddings = torch.cat(embeddings)
-    print(f"Check: {torch.allclose(normalized_embeddings, pending_embeddings, atol=1e-2)}")
+    torch.save({
+                "normalized_embeddings": normalized_embeddings,
+                "prompts": dataset.data,
+                "indices": dataset.indices
+                },
+               "clip_text_normalized_embeddings_checkpoint.pt")
+    print("Saved embeddings to clip_text_normalized_embeddings_checkpoint.pt")
 
 if __name__ == "__main__":
     main()

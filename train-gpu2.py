@@ -297,7 +297,7 @@ def load_model(config_path: str, epoch_or_latest: Union[str, int] = '_latest'):
 def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
           lr: float = 2e-5, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
 
-    device = torch.device('cuda:0')
+    device = torch.device('cuda:1')
     batch_size = args.bs
     epochs = args.epochs
     if not os.path.exists(output_dir):
@@ -343,7 +343,7 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', default='./training_data.pkl')
-    parser.add_argument('--out_dir', default='./data/checkpoints')
+    parser.add_argument('--out_dir', default='./data/checkpoints-p40-only_prefix')
     parser.add_argument('--prefix', default='coco_prefix', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=25)
     parser.add_argument('--save_every', type=int, default=1)
