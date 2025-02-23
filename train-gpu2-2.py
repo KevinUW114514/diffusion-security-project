@@ -257,7 +257,7 @@ class ClipCaptionModel(nn.Module):
             )
         else:
             self.clip_project = TransformerMapper(prefix_size, self.gpt_embedding_size, prefix_length, clip_length, num_layers)
-
+            
 
 class ClipCaptionPrefix(ClipCaptionModel):
 
@@ -303,7 +303,7 @@ def load_model(config_path: str, epoch_or_latest: Union[str, int] = '_latest'):
 def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
           lr: float = 2e-5, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
 
-    device = torch.device('cuda:0')
+    device = torch.device('cuda:1')
     batch_size = args.bs
     epochs = args.epochs
     if not os.path.exists(output_dir):
@@ -349,7 +349,7 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', default='./training_data.pkl')
-    parser.add_argument('--out_dir', default='./data/checkpoints-max_tokens_76-prefix_length_40-bs_8-compiled-MLP')
+    parser.add_argument('--out_dir', default='./data/checkpoints-max_tokens_76-prefix_lenth_40-bs_8-compiled-TF')
     parser.add_argument('--prefix', default='coco_prefix', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--save_every', type=int, default=1)
@@ -378,8 +378,11 @@ def main():
         print("Train both prefix and GPT")
         sys.stdout.flush()
     model = torch.compile(model, mode="reduce-overhead")
-    # checkpoint = torch.load("./data/checkpoints/coco_prefix-009.pt", map_location=torch.device('cpu'))
+    
+    
+    # checkpoint = torch.load("./data/checkpoints-max_tokens_76-prefix_lenth_35-bs_24-compiled-TF/coco_prefix-009.pt", map_location=torch.device('cpu'))
     # model.load_state_dict(checkpoint)
+    
     train(dataset, model, args, output_dir=args.out_dir, output_prefix=args.prefix)
 
 

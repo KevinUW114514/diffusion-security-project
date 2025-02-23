@@ -13,6 +13,7 @@ import json
 from typing import Tuple, Optional, Union
 
 torch.set_float32_matmul_precision('high')
+DEVICE = 'cuda:1'
 
 class MappingType(Enum):
     MLP = 'mlp'
@@ -257,7 +258,7 @@ class ClipCaptionModel(nn.Module):
             )
         else:
             self.clip_project = TransformerMapper(prefix_size, self.gpt_embedding_size, prefix_length, clip_length, num_layers)
-
+            
 
 class ClipCaptionPrefix(ClipCaptionModel):
 
@@ -303,7 +304,7 @@ def load_model(config_path: str, epoch_or_latest: Union[str, int] = '_latest'):
 def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
           lr: float = 2e-5, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
 
-    device = torch.device('cuda:0')
+    device = torch.device('cuda:1')
     batch_size = args.bs
     epochs = args.epochs
     if not os.path.exists(output_dir):
@@ -349,13 +350,13 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', default='./training_data.pkl')
-    parser.add_argument('--out_dir', default='./data/checkpoints-max_tokens_76-prefix_length_40-bs_8-compiled-MLP')
+    parser.add_argument('--out_dir', default='./data/checkpoints-max_tokens_76-prefix_lenth_35-bs_24-compiled-TF')
     parser.add_argument('--prefix', default='coco_prefix', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--save_every', type=int, default=1)
-    parser.add_argument('--prefix_length', type=int, default=40)
-    parser.add_argument('--prefix_length_clip', type=int, default=40)
-    parser.add_argument('--bs', type=int, default=8)
+    parser.add_argument('--prefix_length', type=int, default=35)
+    parser.add_argument('--prefix_length_clip', type=int, default=35)
+    parser.add_argument('--bs', type=int, default=24)
     parser.add_argument('--only_prefix', dest='only_prefix', action='store_true')
     parser.add_argument('--mapping_type', type=str, default='mlp', help='mlp/transformer')
     parser.add_argument('--num_layers', type=int, default=8)
@@ -363,25 +364,21 @@ def main():
     parser.add_argument('--normalize_prefix', dest='normalize_prefix', action='store_true')
     args = parser.parse_args()
     prefix_length = args.prefix_length
-    dataset = ClipCocoDataset(args.data, prefix_length, normalize_prefix=args.normalize_prefix)
-    # prefix_dim = 640 if args.is_rn else 512
+    dataset = None
     prefix_dim = 768
+    prefix_length = 35
+    clip_length = 35
     args.mapping_type = {'mlp': MappingType.MLP, 'transformer': MappingType.Transformer}[args.mapping_type]
-    print(f"architecture: {args.mapping_type}")
-    if args.only_prefix:
-        model = ClipCaptionPrefix(prefix_length, clip_length=args.prefix_length_clip, prefix_size=prefix_dim,
-                                  num_layers=args.num_layers, mapping_type=args.mapping_type)
-        print("Train only prefix")
-    else:
-        model = ClipCaptionModel(prefix_length, clip_length=args.prefix_length_clip, prefix_size=prefix_dim,
-                                  num_layers=args.num_layers, mapping_type=args.mapping_type)
-        print("Train both prefix and GPT")
-        sys.stdout.flush()
-    model = torch.compile(model, mode="reduce-overhead")
-    # checkpoint = torch.load("./data/checkpoints/coco_prefix-009.pt", map_location=torch.device('cpu'))
-    # model.load_state_dict(checkpoint)
-    train(dataset, model, args, output_dir=args.out_dir, output_prefix=args.prefix)
-
+    print(f"args.mapping_type: {args.mapping_type}")
+    print(f"manue: {MappingType.Transformer}")
+    model = ClipCaptionModel(prefix_length, clip_length=clip_length, prefix_size=prefix_dim,
+                                  num_layers=8, mapping_type=args.mapping_type)
+    model = torch.compile(model)
+    checkpoint = torch.load("./data/checkpoints-max_tokens_76-prefix_lenth_35-bs_24-compiled-TF/coco_prefix-009.pt", map_location=torch.device('cpu'))
+    model.load_state_dict(checkpoint)
+    
+    # model = model.eval()
+    # model = model.to(DEVICE)
 
 if __name__ == '__main__':
     main()

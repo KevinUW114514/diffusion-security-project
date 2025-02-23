@@ -12,8 +12,6 @@ from transformers import (
     GPT2LMHeadModel,
 )
 
-import cog
-
 # import torch
 
 N = type(None)
@@ -33,13 +31,15 @@ TA = Union[T, ARRAY]
 WEIGHTS_PATHS = {
     # "coco": "./checkpoints/coco_prefix-015.pt",
     # "coco": "./data/checkpoints-p40-only_prefix/coco_prefix-006.pt",
-    "coco": "./data/checkpoints/coco_prefix-008.pt",
+    # "coco": "./data/checkpoints-full-token-length-MLP/coco_prefix-021.pt",
+    "coco": "./data/checkpoints-max_tokens_76-prefix_length_35-bs_24-MLP/coco_prefix-008.pt",
     # "conceptual-captions": "conceptual_weights.pt",
 }
 
 D = torch.device
 CPU = torch.device("cpu")
 DEVICE = "cuda:1"
+# DEVICE = "cpu"
 
 gpt2_model = "gpt2"
         
@@ -54,7 +54,7 @@ def main(data, model_name="coco", use_beam_search=False, is_only_prefix=False):
     
     # Model loading
     models = {}
-    prefix_length = 40
+    prefix_length = 35
     for key, weights_path in WEIGHTS_PATHS.items():
         # model = ClipCaptionModel(prefix_length, 768)
         if is_only_prefix:
@@ -68,7 +68,7 @@ def main(data, model_name="coco", use_beam_search=False, is_only_prefix=False):
         #     k: v for k, v in checkpoint.items() if k.startswith('clip_project')
         # }
         # mlp_state_dict = {k.replace("clip_project.", ""): v for k, v in mlp_state_dict.items()}
-
+        model = torch.compile(model)
         model.load_state_dict(checkpoint)
         
         # Load the filtered state dict into the clip_project (MLP) module
@@ -184,7 +184,7 @@ def generate_beam(
     beam_size: int = 5,
     prompt=None,
     embed=None,
-    entry_length=67,
+    entry_length=75,
     temperature=1.0,
     stop_token: str = ".",
 ):
