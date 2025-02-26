@@ -38,14 +38,15 @@ WEIGHTS_PATHS = {
     # "coco": "./data/checkpoints-p40-only_prefix/coco_prefix-006.pt",
     # "coco": "./data/checkpoints-full-token-length-MLP/coco_prefix-021.pt",
     # "coco": "./data/checkpoints-max_tokens_76-prefix_length_35-bs_24-MLP/coco_prefix-008.pt",
-    "coco": "./data/checkpoints-max_tokens_76-prefix_lenth_35-bs_24-compiled-TF/coco_prefix-009.pt",
+    # "coco": "./data/checkpoints-max_tokens_76-prefix_lenth_35-bs_24-compiled-TF/coco_prefix-009.pt",
+    "coco": "./data/checkpoints-max_tokens_76-prefix_lenth_40-bs_8-compiled-TF/coco_prefix-009.pt",
     # "conceptual-captions": "conceptual_weights.pt",
 }
 
 D = torch.device
 CPU = torch.device("cpu")
-DEVICE = "cuda:1"
-# DEVICE = "cpu"
+# DEVICE = "cuda:1"
+DEVICE = "cpu"
 
 gpt2_model = "gpt2"
         
@@ -89,11 +90,11 @@ def main(data, model_name="coco", use_beam_search=False, is_only_prefix=False, m
     model = models[model_name]
     """
     
-    prefix_length = 35
-    clip_length = 35
+    prefix_length = 38
+    clip_length = 38
     model = model = ClipCaptionModel(prefix_length=prefix_length, clip_length=clip_length, prefix_size=768, num_layers=8, mapping_type=mapping_type)
     model = torch.compile(model)
-    checkpoint = torch.load("./data/checkpoints-max_tokens_76-prefix_lenth_35-bs_24-compiled-TF/coco_prefix-009.pt", map_location=torch.device('cpu'))
+    checkpoint = torch.load("./data/checkpoints-max_tokens_76-prefix_lenth_38-bs_16-compiled-TF/coco_prefix-010.pt", map_location=torch.device('cpu'))
     model.load_state_dict(checkpoint)
     model = model.eval()
     model = model.to(device)
@@ -102,7 +103,7 @@ def main(data, model_name="coco", use_beam_search=False, is_only_prefix=False, m
     # Load the prompt embedding
         with torch.no_grad():
             prompt_emb = data['clip_embedding'][i].to(device, dtype=torch.float32)
-            prefix_embed = model.clip_project(prompt_emb).reshape(1, prefix_length, -1)
+            prefix_embed = model.clip_project(prompt_emb.unsqueeze(0)).reshape(1, prefix_length, -1)
         
         # Generate text using beam search or simple generation
         if use_beam_search:

@@ -32,14 +32,16 @@ WEIGHTS_PATHS = {
     # "coco": "./checkpoints/coco_prefix-015.pt",
     # "coco": "./data/checkpoints-p40-only_prefix/coco_prefix-006.pt",
     # "coco": "./data/checkpoints-full-token-length-MLP/coco_prefix-021.pt",
-    "coco": "./data/checkpoints-max_tokens_76-prefix_length_35-bs_24-MLP/coco_prefix-008.pt",
+    "coco": "./data/checkpoints-max_tokens_76-prefix_length_35-bs_24-compiled-MLP/coco_prefix-020.pt",
+    # "coco": "./data/checkpoints-max_tokens_76-prefix_length_40-bs_8-compiled-MLP/coco_prefix-009.pt",
+    # "coco": "./data/checkpoints-max_tokens_76-prefix_lenth_35-bs_24-compiled-TF/coco_prefix-009.pt",
     # "conceptual-captions": "conceptual_weights.pt",
 }
 
 D = torch.device
 CPU = torch.device("cpu")
-DEVICE = "cuda:1"
-# DEVICE = "cpu"
+# DEVICE = "cuda:1"
+DEVICE = "cpu"
 
 gpt2_model = "gpt2"
         

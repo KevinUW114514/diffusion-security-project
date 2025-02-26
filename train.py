@@ -317,7 +317,7 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
     )
     # save_config(args)
     for epoch in range(epochs):
-        print(f">>> Training epoch {epoch}")
+        print(f">>> Training epoch {epoch + 20}")
         sys.stdout.flush()
         progress = tqdm(total=len(train_dataloader), desc=output_prefix)
         for idx, (tokens, mask, prefix) in enumerate(train_dataloader):
@@ -341,7 +341,7 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
         if epoch % args.save_every == 0 or epoch == epochs - 1:
             torch.save(
                 model.state_dict(),
-                os.path.join(output_dir, f"{output_prefix}-{epoch + 00:03d}.pt"),
+                os.path.join(output_dir, f"{output_prefix}-{epoch + 20:03d}.pt"),
             )
     return model
 
@@ -349,13 +349,13 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', default='./training_data.pkl')
-    parser.add_argument('--out_dir', default='./data/checkpoints-max_tokens_76-prefix_length_40-bs_8-compiled-MLP')
+    parser.add_argument('--out_dir', default='./data/checkpoints-max_tokens_76-prefix_length_35-bs_24-compiled-MLP')
     parser.add_argument('--prefix', default='coco_prefix', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--save_every', type=int, default=1)
-    parser.add_argument('--prefix_length', type=int, default=40)
-    parser.add_argument('--prefix_length_clip', type=int, default=40)
-    parser.add_argument('--bs', type=int, default=8)
+    parser.add_argument('--prefix_length', type=int, default=35)
+    parser.add_argument('--prefix_length_clip', type=int, default=35)
+    parser.add_argument('--bs', type=int, default=24)
     parser.add_argument('--only_prefix', dest='only_prefix', action='store_true')
     parser.add_argument('--mapping_type', type=str, default='mlp', help='mlp/transformer')
     parser.add_argument('--num_layers', type=int, default=8)
@@ -377,9 +377,9 @@ def main():
                                   num_layers=args.num_layers, mapping_type=args.mapping_type)
         print("Train both prefix and GPT")
         sys.stdout.flush()
-    model = torch.compile(model, mode="reduce-overhead")
-    # checkpoint = torch.load("./data/checkpoints/coco_prefix-009.pt", map_location=torch.device('cpu'))
-    # model.load_state_dict(checkpoint)
+    model = torch.compile(model)
+    checkpoint = torch.load("./data/checkpoints-max_tokens_76-prefix_length_35-bs_24-compiled-MLP/coco_prefix-019.pt", map_location=torch.device('cpu'))
+    model.load_state_dict(checkpoint)
     train(dataset, model, args, output_dir=args.out_dir, output_prefix=args.prefix)
 
 
